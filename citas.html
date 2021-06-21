@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Salon de Belleza</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link href = "https://file.myfontastic.com/itzFQZgSYAYRxPTdE4MnDK/icons.css" rel = "stylesheet">
+	<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+	<script src="js/init.js"></script>
+</head>
+<body>
+	<header class="header">
+		<div class="contenedor">
+			<h1 class="logo">Salón de Belleza</h1>
+			<span class="icon-menu" id="btn-menu"></span>
+			<nav class="nav" id="nav">
+				<ul class="menu">
+					<li class="menu__item"><a class="menu__link select" href="index.html">Inicio</a></li>
+					<li class="menu__item"><a class="menu__link" href="Quienessomos.html">¿Quienes Somos?</a></li>
+					<li class="menu__item"><a class="menu__link" href="Servicios.html">Servicios</a></li>
+					<li class="menu__item"><a class="menu__link" href="Tratamientos.html">Tratamientos</a></li>
+					<li class="menu__item"><a class="menu__link" href="Productos.html">Productos</a></li>
+					<li class="menu__item"><a class="menu__link" href="citas.html">Citas agendadas</a></li>
+					<li class="menu__item"><a class="menu__link" href="index.html">Cerrar sesion</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<div class="banner">
+		<img src="img/banner.jpg" alt="" class="banner__img"width="1500px" height="600px">
+		<div class="contenedor">
+			<h2 class="banner__titulo">Citas Agendadas</h2>
+		</div>
+	</div>
+	<main class="main">
+		<div class="contenedor">
+			<section class="info">
+				<article class="info__columna">
+					<table class="info__txt">
+						<thead>
+					<tr>
+						<ol id="citas"><li></li></ol>
+					</tr>
+				</thead>
+					</table>
+				</article>
+				</div>
+			</section>
+		</div>
+	</main>
+	<footer class="footer">
+		<p class="copy">&copy; Todos los Derechos Reservados</p>
+		<p class="copy">Cuevas Flota Sara Isabel</p>
+		<p class="copy">Programacion web</p>
+	</footer>
+	<script src="js/javascript.js"></script>
+
+	<script>
+		let usuario = "";
+		const auth=firebase.auth();
+
+		const provider=new firebase.auth.GoogleAuthProvider();
+
+		provider.setCustomParameters({
+			prompt: "select_account"
+		});
+
+		auth.onAuthStateChanged(
+			usuarioAuth=>{
+				if(usuarioAuth && usuarioAuth.email){
+					usuario=usuarioAuth.email;
+					muestraMensaje();
+				} else{
+					auth.signInWithRedirect(provider);
+				} 
+			},
+		);
+
+			const firestore=firebase.firestore();
+
+				function muestraMensaje(){
+					firestore.collection("citas")
+					.onSnapshot(
+						querySnapshot=>{
+							citas.innerHTML="";
+							querySnapshot.forEach(doc=>{
+								const data= doc.data();
+
+								citas.innerHTML +=`<li><u>${cod(data.FECHA)}</u><br>${cod(data.SERVICIO)}<br>${cod(data.DESCRIPCION)}</li>`;
+							})
+						},
+					)
+				}
+				const codMap = Object.freeze(new Map([['&', '&amp;'], ['<', '&lt;'],
+    ['>', '&gt;'], ['"', '&quot;'], ["'", '&#039;']]));
+
+    /** Codifica un texto para que escape los caracteres especiales y no se pueda 
+     * interpretar como HTML. Esta técnica evita la inyeción de código. */
+    function cod(texto) {
+        return (texto || "").replace(/[&<>"']/g, letra => codMap.get(letra));
+    }
+	</script>
+</body>
+</html>
