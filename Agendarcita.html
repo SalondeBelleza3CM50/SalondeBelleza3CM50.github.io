@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Salon de Belleza</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link href = "https://file.myfontastic.com/itzFQZgSYAYRxPTdE4MnDK/icons.css" rel = "stylesheet">
+	<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+	<script src="js/init.js"></script>
+</head>
+<body>
+	<header class="header">
+		<div class="contenedor">
+			<h1 class="logo">Salón de Belleza</h1>
+			<span class="icon-menu" id="btn-menu"></span>
+			<nav class="nav" id="nav">
+				<ul class="menu">
+					<li class="menu__item"><a class="menu__link" href="index.html">Inicio</a></li>
+					<li class="menu__item"><a class="menu__link" href="Quienessomos.html">¿Quienes Somos?</a></li>
+					<li class="menu__item"><a class="menu__link" href="Servicios.html">Servicios</a></li>
+					<li class="menu__item"><a class="menu__link" href="Tratamientos.html">Tratamientos</a></li>
+					<li class="menu__item"><a class="menu__link" href="Productos.html">Productos</a></li>
+					<li class="menu__item"><a class="menu__link select" href="index.html">Cerrar Sesion</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<div class="banner">
+		<img src="img/banner.jpg" alt="" class="banner__img"width="1500px" height="600px">
+		<div class="contenedor">
+			<h2 class="banner__titulo">Agendar Cita</h2>
+			<p class="banner__txt">No te arrepentiras</p>
+		</div>
+	</div>
+	<main class="main">
+		<form action="javascript:agrega();">
+		<div class="contenedor">
+			<section class="info">
+				<article class="agendar__columna">
+					<h3 class="agendar__titulo">Cuentanos que te quieres hacer</h3>
+					<p class="agendar__txt">Elige el Servicio/Tratamiento</p>
+					<select id="servicio" class="servicio__select" aria-label="Default select example">
+  						<option selected>Seleccione</option>
+  						<option value="1">Corte de Cabello</option>
+  						<option value="2">Tinte</option>
+  						<option value="3">Tinte Fantasia</option>
+  						<option value="4">Decoloracion</option>
+  						<option value="5">Aplicacion Gelish</option>
+  						<option value="6">Aplicacion Uñas Acrilicas</option>
+  						<option value="7">Pedicure</option>
+  						<option value="8">Manicure</option>
+  						<option value="9">Tratamiento reparacion</option>
+  						<option value="10">Keratina Brasileña</option>
+  						<option value="11">Hidratacion</option>
+  						<option value="12">Limpieza profunda de rostro</option>
+						</select>
+						<p class="agendar__txt"> Elige la fecha de tu cita</p>
+						<input class="agendar__txt" id="fecha" type="date" autofocus required
+                 max="2022-01-24" min="2021-01-24">
+					<p class="agendar__txt">Describe mejor tu Servicio/Tratamiento</p>
+					<textarea id="descripcion" rows="2" class="servicio__descripcion" placeholder="Descripcion del servicio/tratamiento"></textarea>
+					<p><button class="agendar__txt" style="left: 660px;">Agendar</button></p>
+				</article>
+			</section>
+		</div>
+		</form>
+	</main>
+	<footer class="footer">
+		<p class="copy">&copy; Todos los Derechos Reservados</p>
+		<p class="copy">Cuevas Flota Sara Isabel</p>
+		<p class="copy">Programacion web</p>
+	</footer>
+	<script src="js/javascript.js"></script>
+
+	<script>
+		const auth=firebase.auth();
+
+		const provider=new firebase.auth.GoogleAuthProvider();
+
+		provider.setCustomParameters({
+			prompt: "select_account"
+		});
+
+		auth.onAuthStateChanged(
+			usuarioAuth=>{
+				if(usuarioAuth && usuarioAuth.email){
+					alert("Bienvenido");
+				} else{
+					auth.signInWithRedirect(provider);
+				} 
+			},
+		);
+
+			const firestore=firebase.firestore();
+
+			function agrega(){
+				firestore.collection("citas").add({
+					SERVICIO: servicio.value.trim(),
+					FECHA: fecha.value.trim(),
+					DESCRIPCION: descripcion.value.trim()
+				});
+				alert("Cita Agendada Correctamente");
+			}
+		
+	</script>
+</body>
+</html>
